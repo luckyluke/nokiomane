@@ -1,0 +1,8 @@
+versione 0.1:
+-interfaccia grafica base
+-struttura modulare core/interfaccia/in-out
+-salvataggio su file della rubrica
+-identificazione telefono
+
+--next
+-formati file backup compatibili

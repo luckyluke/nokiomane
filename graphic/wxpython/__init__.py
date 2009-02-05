@@ -1,0 +1,1 @@
+from NMAppMain import NMApp
