@@ -40,6 +40,12 @@ class NMFrame(wx.Frame):
         self.Centre()
         self.Show(True)
 
-app = wx.App()
-NMFrame(None, -1, "Nokiomane V"+versione+"."+revisione)
-app.MainLoop()
+# x compatibilita
+class NMApp(wx.App):
+    def __init__(self):
+        wx.App.__init__(self)
+        NMFrame(None, -1, "Nokiomane V"+versione+"."+revisione)
+
+#app = wx.App()
+#NMFrame(None, -1, "Nokiomane V"+versione+"."+revisione)
+#app.MainLoop()
