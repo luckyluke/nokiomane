@@ -1,22 +1,26 @@
 
 from io import *
 from graphic import *
+from NMError import *
 
 class NMcore():
     def __init__(self, option):
         self.debug = option.debug
         self.text = option.text
+        # per sviluppo, sollevare questa eccezione per indicare una caratteristica non ancora implementata
+        self.ex = DaFare
+        # errore interno di funzionamento, sollevato manualmente
+        self.err = Oops
         ####inizializzo core
             #leggo configurazione
         ####inizializzo io
         # inizializzo io ah hoc e quello supportato da gammu
-        #self.io = IOmanager.IOmanager(self, option.conn, option.proto)
-        self.gammu = GammuManager.NMGammuManager()
+        self.io = IOmanager.IOmanager(self, option.conn, option.proto)
+        self.gammu = self.io.gammu
         ####inizializzo grafica
         if not self.text:
             self.app = NMApp()
             self.app.core = self
-        #self.app.MainLoop()
         if(self.debug):
             print 'inizializzazione del core ok'
     def run(self):

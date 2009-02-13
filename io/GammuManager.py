@@ -21,12 +21,14 @@ config6230 = {
 class NMGammuManager(GammuWorker):
     '''
     Classe che gestisce le azioni di comunicazione del telefono tramite Gammu
-    uso:
+    uso :
         settaggio configurazione
         (accodamento comandi)
         inizio connessione
         (eventuale accodamento comandi)
         termine connessione
+    per l'uso interattivo si usa il metodo addcommand per far eseguire un comando
+    addcommand esegue il comando se si e connessi, senno lo accoda in attesa di connessione
     '''
     log = []
     def __init__(self):
