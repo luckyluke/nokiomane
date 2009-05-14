@@ -1,0 +1,15 @@
+idea di funzinoamento: conunicazioni, segnalazioni asincrone(premendo un tasto etc) con 'eventi', senno per operazioni sincrone chiamata diretta delle funzioni (stile amsn2)
+--> operazioni automatiche sincrone, comandate dall'interfaccia asincrone
+
+convenzione python: le funzioni da interfacciare con eventi iniziano con '_' ovvero protette
+quelle richiamate direttamente sono senza _, quelle private per uso interno con __ (due _)
+
+IOManager:
+crea l'interfaccia a gammu e interfaccia gammu con qualunque cosa, ad es posso montare sul filesystem una dir che rispecchia il contenuto del telefono, o posso condividere il tel in rete, in generale maneggia il/i telefoni connessi.
+
+GammuManager:
+wrapper di python-gammu, fornisce il max livello di astrazione sulle operazioni da fare sul telefono, ad es. leggi rubrica, messaggi, sfoglia memoria, etc.
+in generale, eventi a cui rispondere: connect, disconnect, caricamento immagini, suonerie, lettura sms, rubrica, backup, ripristino backup....
+
+interfaccia grafica?!?!??!
+

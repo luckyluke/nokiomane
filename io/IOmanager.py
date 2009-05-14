@@ -1,4 +1,4 @@
-import GammuManager
+from GammuManager import NMGammuManager
 import Data
 
 class IOmanager():
@@ -7,27 +7,16 @@ class IOmanager():
     '''
     def __init__(self, core, conn, proto):
         self.core = core
-        self.gammu = GammuManager.NMGammuManager()
-        if self.core.text:
-            if conn=='usb':
-                self.init_usb(proto)
-            elif conn == 'irda':
-                self.init_irda(proto)
-            elif conn == 'bluez':
-                self.init_bluez(proto)
-            else:
-                # non dovrebbe essere mai alzata ma cmq
-                raise self.core.err('hahaha hai sbagliato connessione!!!')
+        self.gammu = NMGammuManager(self.core)
 
-    def init_usb(self, proto):
-        if self.core.debug:
-            print 'inizializzo connessione usb'
-        raise self.core.ex()
-    def init_irda(self, proto):
-        if self.core.debug:
-            print 'inizializzo connessione irda'
-        raise self.core.ex()
-    def init_bluez(self, proto):
-        if self.core.debug:
-            print 'inizializzo connessione bluex'
-        raise self.core.ex()
+    ''' monta il conteuto del telefono come un filesystem '''
+    def crea_fs(self):
+        pass
+
+    def monta_fs(self):
+        pass
+
+    def smonta_fs(self):
+        pass
+
+

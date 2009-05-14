@@ -3,10 +3,13 @@ from io import *
 from graphic import *
 from NMError import *
 
+from event_manager import NMEventManager
+
 class NMcore():
     def __init__(self, option):
         self.debug = option.debug
         self.text = option.text
+        self._event_manager = NMEventManager(self)
         # per sviluppo, sollevare questa eccezione per indicare una caratteristica non ancora implementata
         self.ex = DaFare
         # errore interno di funzionamento, sollevato manualmente
