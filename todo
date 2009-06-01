@@ -1,8 +1,9 @@
 versione 0.1:
 -interfaccia grafica base
 -struttura modulare core/interfaccia/in-out
--salvataggio su file della rubrica
--identificazione telefono
+-implementazione modulare delle azioni da svolgere---->gammuaction
+-salvataggio/ripristino su file della rubrica
+-identificazione telefono e impostazione automatica della connessione
 
---next
+--FUTURE
 -formati file backup compatibili

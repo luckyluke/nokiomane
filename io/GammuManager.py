@@ -16,7 +16,11 @@ config6230 = {
             'Model': '',
             }
 
-
+class GammuStatus:
+    DISCONNECTED = 0
+    CONNECTING = 1
+    CONNECTED = 2
+    EXECUTING = 3
 
 class NMGammuManager(GammuWorker):
     '''
@@ -33,10 +37,22 @@ class NMGammuManager(GammuWorker):
     log = []
     def __init__(self, core):
         GammuWorker.__init__(self, self.NMcallback)
+        self._status = GammuStatus.DISCONNECTED
         self._em = core._event_manager
 
         self._em.register(self._em.events.CONNECT, self._connect)
         self._em.register(self._em.events.DISCONNECT, self._disconnect)
+
+    def execAction(self, action):
+        # TODO: check for state machine status
+        for cmd_ in action.cmds:
+            self.enqueue_command(cmd_[0], cmd_[1])
+            self.addCB(cmd_[0], cmd_[2], cmd_[3])
+        result = action.process()
+
+    # add cbs to the pending cbs
+    def addCB(self, cmd, cbs, fundamental):
+        pass
 
     def configure(self, config = None):
         if config == None:
@@ -44,14 +60,18 @@ class NMGammuManager(GammuWorker):
         else:
             return GammuWorker.configure(self, config)
 
-    def addcommand(self, command, params):
+    def _addcommand(self, command, params):
         self.enqueue_command(self, command, params)
 
     def _connect(self):
+        self._status = GammuStatus.CONNECTING
         self.initiate(self)
+        # FIXME: wait for the response?
+        self._status = GammuStatus.CONNECTED
 
     def _disconnect(self, timeout=0):
         self.terminate(self, timeout)
+        self._status = GammuStatus.DISCONNECT
 
     def _command_noninteractive(self, config, command, params):
         self.configure(config)

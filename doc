@@ -13,3 +13,8 @@ in generale, eventi a cui rispondere: connect, disconnect, caricamento immagini,
 
 interfaccia grafica?!?!??!
 
+---------------->GammuAction<---------------
+per fare qualunque cosa, il core deve creare una GammuAction che passerà al GammuManager che provvederà a gestirla eseguendo i comandi necessari ed elaborando i dati in output
+
+la sincronizzazione dello stato dell'azione avviene attraverso la callback globale del gammumanager, che richiamerà a sua volta le callback dei vari comandi che si stanno eseguendo
+
