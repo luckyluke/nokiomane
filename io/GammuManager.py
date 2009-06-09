@@ -1,4 +1,6 @@
+import gammu
 from gammu.Worker import GammuWorker
+from GammuActions import *
 
 #log = []
 #config6230 = {'name':'Nokia6230', 'model':'auto', 'connection':'dku5', 'port':'dev/ttyACM0'}
@@ -14,6 +16,19 @@ config6230 = {
             'Device': '/dev/ttyACM0',
             'Localize': None,  # Set automatically by python-gammu
             'Model': '',
+            }
+
+config5200 = {
+            'StartInfo': 'no',
+            'UseGlobalDebugFile': 1,
+            'DebugFile': None, # Set on other place
+            'SyncTime': 'yes',
+            'Connection': 'bluerfphonet',
+            'LockDevice': 'no',
+            'DebugLevel': 'textalldate', # Set on other place
+            'Device': '00:1E:3A:B4:9B:47',
+            'Localize': None,  # Set automatically by python-gammu
+            'Model': 'auto',
             }
 
 class GammuStatus:
@@ -34,44 +49,50 @@ class NMGammuManager(GammuWorker):
     per l'uso interattivo si usa il metodo addcommand per far eseguire un comando
     addcommand esegue il comando se si e connessi, senno lo accoda in attesa di connessione
     '''
-    log = []
     def __init__(self, core):
-        GammuWorker.__init__(self, self.NMcallback)
+        def callback(op, result, error, percent):
+            self.NMCallback(op, result, error, percent)
+        GammuWorker.__init__(self, callback)
         self._status = GammuStatus.DISCONNECTED
-        self._em = core._event_manager
-
-        self._em.register(self._em.events.CONNECT, self._connect)
-        self._em.register(self._em.events.DISCONNECT, self._disconnect)
+        self.config  = None
+        # [nome, callback, fondamentale]
+        self.callbacks = []
 
     def execAction(self, action):
         # TODO: check for state machine status
+        cmds = [[cmd[0], cmd[1]] for cmd in action.cmds]
+        cbs = [[cmd[0], cmd[2], cmd[3]] for cmd in action.cmds]
+        self.addCBs(cbs)
         for cmd_ in action.cmds:
+            # TODO: use tasks
             self.enqueue_command(cmd_[0], cmd_[1])
-            self.addCB(cmd_[0], cmd_[2], cmd_[3])
-        result = action.process()
 
     # add cbs to the pending cbs
-    def addCB(self, cmd, cbs, fundamental):
-        pass
+    def addCBs(self, cbs):
+        self.callbacks.extend(cbs)
 
     def configure(self, config = None):
         if config == None:
             pass #autorilevamento cell
         else:
+            self.config = config
             return GammuWorker.configure(self, config)
 
     def _addcommand(self, command, params):
         self.enqueue_command(self, command, params)
 
     def _connect(self):
+        if not self.config:
+            # still to configure
+            pass
         self._status = GammuStatus.CONNECTING
-        self.initiate(self)
+        self.initiate()
         # FIXME: wait for the response?
         self._status = GammuStatus.CONNECTED
 
     def _disconnect(self, timeout=0):
-        self.terminate(self, timeout)
-        self._status = GammuStatus.DISCONNECT
+        self.terminate(timeout)
+        self._status = GammuStatus.DISCONNECTED
 
     def _command_noninteractive(self, config, command, params):
         self.configure(config)
@@ -79,8 +100,7 @@ class NMGammuManager(GammuWorker):
         self.connect()
         self.disconnect()
 
-    @staticmethod
-    def NMcallback(op, result, error, percent):
+    def NMCallback(self, op, result, error, percent):
         '''
         Funzione richiamata alla fine dell'esecuzione di ogni operazione
         puo registrare log delle operazioni e valutarne il risultato
@@ -90,5 +110,18 @@ class NMGammuManager(GammuWorker):
             error - codice di errore in caso
             percent - % sul totale delle operazioni??????
         '''
-        log.append((op, result, error))
-        print str(log)
+        if op == 'Init' or op == 'Terminate':
+            return
+        cmd = self.callbacks[0]
+        if cmd[0] != op:
+            return
+        # FIXME
+        if error != gammu.Core.ERR_NONE:
+            if cmd[2]:
+                # errore, interrompere l'azione
+                pass
+            else: pass
+        callback = cmd[1]
+        callback(result)
+        self.callbacks = self.callbacks[1:]
+
