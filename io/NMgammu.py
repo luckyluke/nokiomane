@@ -1,4 +1,5 @@
 
+# esempio gammu
 import gammu
 import sys
 

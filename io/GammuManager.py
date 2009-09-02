@@ -2,8 +2,9 @@ import gammu
 from gammu.Worker import GammuWorker
 from GammuActions import *
 
-#log = []
-#config6230 = {'name':'Nokia6230', 'model':'auto', 'connection':'dku5', 'port':'dev/ttyACM0'}
+#TODO: gestire configurazione, configmanager?
+
+
 #config6230 = { 'port':'dev/ttyACM0'}
 config6230 = {
             'StartInfo': 'no',
@@ -31,6 +32,7 @@ config5200 = {
             'Model': 'auto',
             }
 
+
 class GammuStatus:
     DISCONNECTED = 0
     CONNECTING = 1
@@ -53,13 +55,13 @@ class NMGammuManager(GammuWorker):
         def callback(op, result, error, percent):
             self.NMCallback(op, result, error, percent)
         GammuWorker.__init__(self, callback)
-        self._status = GammuStatus.DISCONNECTED
+        self.status = GammuStatus.DISCONNECTED
         self.config  = None
         # [nome, callback, fondamentale]
         self.callbacks = []
 
     def execAction(self, action):
-        # TODO: check for state machine status
+        # TODO: check for state machine status, raise exception and log when not connected
         cmds = [[cmd[0], cmd[1]] for cmd in action.cmds]
         cbs = [[cmd[0], cmd[2], cmd[3]] for cmd in action.cmds]
         self.addCBs(cbs)
@@ -81,24 +83,20 @@ class NMGammuManager(GammuWorker):
     def _addcommand(self, command, params):
         self.enqueue_command(self, command, params)
 
-    def _connect(self):
+    def connect(self):
         if not self.config:
             # still to configure
             pass
-        self._status = GammuStatus.CONNECTING
-        self.initiate()
-        # FIXME: wait for the response?
-        self._status = GammuStatus.CONNECTED
+        if self.status != GammuStatus.CONNECTED:
+            self.status = GammuStatus.CONNECTING
+            self.initiate()
+            # FIXME: wait for the response?
+            self.status = GammuStatus.CONNECTED
 
-    def _disconnect(self, timeout=0):
-        self.terminate(timeout)
-        self._status = GammuStatus.DISCONNECTED
-
-    def _command_noninteractive(self, config, command, params):
-        self.configure(config)
-        self.addcommand(command, params)
-        self.connect()
-        self.disconnect()
+    def disconnect(self, timeout=0):
+        if self.status != GammuStatus.DISCONNECTED:
+            self.terminate(timeout)
+            self.status = GammuStatus.DISCONNECTED
 
     def NMCallback(self, op, result, error, percent):
         '''
@@ -116,7 +114,9 @@ class NMGammuManager(GammuWorker):
         if cmd[0] != op:
             return
         # FIXME
+        raise NotImplementedError
         if error != gammu.Core.ERR_NONE:
+            raise ValueError
             if cmd[2]:
                 # errore, interrompere l'azione
                 pass
@@ -124,4 +124,6 @@ class NMGammuManager(GammuWorker):
         callback = cmd[1]
         callback(result)
         self.callbacks = self.callbacks[1:]
+
+
 
