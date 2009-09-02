@@ -4,8 +4,11 @@ idea di funzinoamento: conunicazioni, segnalazioni asincrone(premendo un tasto e
 convenzione python: le funzioni da interfacciare con eventi iniziano con '_' ovvero protette
 quelle richiamate direttamente sono senza _, quelle private per uso interno con __ (due _)
 
-IOManager:
-crea l'interfaccia a gammu e interfaccia gammu con qualunque cosa, ad es posso montare sul filesystem una dir che rispecchia il contenuto del telefono, o posso condividere il tel in rete, in generale maneggia il/i telefoni connessi.
+FileSystemManager:
+permette (a seconda del telefono) di montare sul filesystem una dir che rispecchia il contenuto del telefono
+
+NetManager:
+permette di condividere il tel in rete
 
 GammuManager:
 wrapper di python-gammu, fornisce il max livello di astrazione sulle operazioni da fare sul telefono, ad es. leggi rubrica, messaggi, sfoglia memoria, etc.
