@@ -1,6 +1,11 @@
-import gammu
+
 from gammu.Worker import GammuWorker
 from GammuActions import *
+
+import gammu
+import logging
+
+log = logging.getLogger('gammu-manager')
 
 #TODO: gestire configurazione, configmanager?
 
@@ -51,12 +56,15 @@ class NMGammuManager(GammuWorker):
     per l'uso interattivo si usa il metodo addcommand per far eseguire un comando
     addcommand esegue il comando se si e connessi, senno lo accoda in attesa di connessione
     '''
-    def __init__(self, core):
+    def __init__(self, core, config=None):
         def callback(op, result, error, percent):
             self.NMCallback(op, result, error, percent)
         GammuWorker.__init__(self, callback)
         self.status = GammuStatus.DISCONNECTED
-        self.config  = None
+        
+        # leggi configurazioni
+        if not config:
+            self.configure(config5200)
         # [nome, callback, fondamentale]
         self.callbacks = []
 
@@ -69,6 +77,16 @@ class NMGammuManager(GammuWorker):
             # TODO: use tasks
             self.enqueue_command(cmd_[0], cmd_[1])
 
+    def eseguiGammuAction(self, gaction, gparams):
+        if not self.config:
+            log.error('Gammu non configurato!')
+            # temp
+            self.configure(config5200)
+        self.connect()
+        self.execAction(gaction)
+        # disconnect???
+        self.disconnect
+
     # add cbs to the pending cbs
     def addCBs(self, cbs):
         self.callbacks.extend(cbs)
@@ -79,9 +97,6 @@ class NMGammuManager(GammuWorker):
         else:
             self.config = config
             return GammuWorker.configure(self, config)
-
-    def _addcommand(self, command, params):
-        self.enqueue_command(self, command, params)
 
     def connect(self):
         if not self.config:
@@ -98,6 +113,11 @@ class NMGammuManager(GammuWorker):
             self.terminate(timeout)
             self.status = GammuStatus.DISCONNECTED
 
+    def _abortAction(self):
+        # ferma la GammuAction, il worker o il thread o quello che e
+        self.callbacks = []
+        
+
     def NMCallback(self, op, result, error, percent):
         '''
         Funzione richiamata alla fine dell'esecuzione di ogni operazione
@@ -108,22 +128,35 @@ class NMGammuManager(GammuWorker):
             error - codice di errore in caso
             percent - % sul totale delle operazioni??????
         '''
-        if op == 'Init' or op == 'Terminate':
+
+        #log.debug('%s %s %s %s' %(op, result, error, percent))
+
+        if self.callbacks or op == 'Init' or op == 'Terminate':
+            cmd = self.callbacks[0]
+        else:
+            log.critical('Callback ricevuta dopo l\'abort di una gammuaction')
             return
-        cmd = self.callbacks[0]
+
         if cmd[0] != op:
+            log.critical('Errore nel flusso delle operazioni: aspettavo %s avuto %s' %(cmd[0], op))
+            self._abortAction()
             return
-        # FIXME
-        raise NotImplementedError
+
         if error != gammu.Core.ERR_NONE:
-            raise ValueError
+            log.error('Errore %s durante l\'esecuzione di %s' %(error, op))
             if cmd[2]:
                 # errore, interrompere l'azione
-                pass
-            else: pass
+                log.critical('Grave, interrompo l\' azione')
+                self._abortAction()
+                return
+
+            self.callbacks = self.callbacks[1:]
+            return
+            
         callback = cmd[1]
         callback(result)
         self.callbacks = self.callbacks[1:]
+        log.info('Operazione %s completata con successo')
 
 
 

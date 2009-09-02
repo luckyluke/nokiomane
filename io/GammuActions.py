@@ -1,5 +1,5 @@
 
-__all__ = ''
+__all__ = ['GetInfo', 'ReadAddressBook']
 
 class GammuAction:
     # vari comandi da eseguire:
@@ -8,7 +8,7 @@ class GammuAction:
     def __init__(self):
         pass
 
-class NMGetInfo(GammuAction):
+class GetInfo(GammuAction):
     def __init__(self):
         GammuAction.__init__(self)
         self.cmds = [['GetBatteryCharge', [], self._battery, False],
@@ -37,7 +37,7 @@ class NMGetInfo(GammuAction):
     def process(self):
         pass
 
-class NMReadAddressBook(GammuAction):
+class ReadAddressBook(GammuAction):
     SCANSIONE_MEMORIA = 0
     LETTURA_MEMORIA = 1
     ELABORAZIONE_RUBRICA = 2

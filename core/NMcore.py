@@ -2,7 +2,8 @@
 from io import *
 from graphic import *
 from event_manager import NMEventManager
-from io import GammuActions
+
+import logging
 
 class NMcore():
     def __init__(self, options):
@@ -11,8 +12,14 @@ class NMcore():
             #leggo configurazione
         ####inizializzo io
         # inizializzo (io ah hoc) e quello supportato da gammu
-        self.io = IOmanager.IOmanager(self, options.config)
+        self.fs = NMFileSystemManager(self)
+        self.gammu = GammuManager.NMGammuManager(self)
         self._event_manager = NMEventManager(self)
+
+        if options.debug:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.WARNING)
 
         if not self.options.text:
             self.app = NMApp()
@@ -24,6 +31,9 @@ class NMcore():
         if not self.options.text:
             self.app.MainLoop()
         else:
-            self.io.eseguiGammuAction(self.options.action, self.options.params)
+            #
+            self.options.action = GammuManager.GetInfo()
+            #
+            self.gammu.eseguiGammuAction(self.options.action, self.options.params)
 
 

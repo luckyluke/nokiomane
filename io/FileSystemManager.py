@@ -3,9 +3,10 @@ import GammuManager
 import Data
 
 import logging
+
 log = logging.getLogger('fs-manager')
 
-class FileSystemManager():
+class NMFileSystemManager():
     '''
     gestisce un filesystem virtuale
     '''

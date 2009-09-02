@@ -15,7 +15,7 @@ if __name__=='__main__':
     parser.add_option("-c", "--config", dest="config",
                       default=None, help="Modello del telefono da collegare")
 
-    parser.add_option("-a", "--azione", dest="action", choices=["NMGetInfo", "NMReadAddressBook"],
+    parser.add_option("-a", "--azione", dest="action", choices=["GetInfo", "ReadAddressBook"],
                       default=None, help="GammuAction da eseguire")
 
     parser.add_option("-p", "--parametri", dest="params", choices=["fbus"],

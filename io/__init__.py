@@ -1,2 +1,3 @@
-import IOmanager
-import GammuActions
+from FileSystemManager import NMFileSystemManager
+from GammuManager import NMGammuManager
+
