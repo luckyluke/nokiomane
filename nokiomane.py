@@ -27,7 +27,7 @@ __url__ = "http://github.com/luckyluke/nokiomane/tree/master"
 __license__ = "GNU GPL"
 
 if __name__=='__main__':
-    parser = optparse.OptionParser(version="0.1")
+    parser = optparse.OptionParser(version=__version__)
     parser.add_option("-d", "--debug", action="store_true", dest="debug",
                       default=False, help="Modalita' debug")
 
