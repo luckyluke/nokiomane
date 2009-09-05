@@ -37,6 +37,18 @@ config5200 = {
             'Model': 'auto',
             }
 
+config1200 = {
+            'StartInfo': 'no',
+            'UseGlobalDebugFile': 1,
+            'DebugFile': None, # Set on other place
+            'SyncTime': 'yes',
+            'Connection': 'fbus',
+            'LockDevice': 'no',
+            'DebugLevel': 'textalldate', # Set on other place
+            'Device': '/dev/ttyUSB0',
+            'Localize': None,  # Set automatically by python-gammu
+            'Model': 'auto',
+            }
 
 class GammuStatus:
     DISCONNECTED = 0
@@ -80,8 +92,6 @@ class NMGammuManager(GammuWorker):
     def eseguiGammuAction(self, gaction, gparams):
         if not self.config:
             log.error('Gammu non configurato!')
-            # temp
-            self.configure(config5200)
         self.connect()
         self.execAction(gaction)
         # disconnect???
@@ -106,11 +116,15 @@ class NMGammuManager(GammuWorker):
             self.status = GammuStatus.CONNECTING
             self.initiate()
             # FIXME: wait for the response?
+            # set lock
+            self.addCBs([['Init', lambda: 'Init', True]])
             self.status = GammuStatus.CONNECTED
 
     def disconnect(self, timeout=0):
         if self.status != GammuStatus.DISCONNECTED:
             self.terminate(timeout)
+            # FIXME: wait for the response?
+            # set callback and lock
             self.status = GammuStatus.DISCONNECTED
 
     def _abortAction(self):
@@ -138,13 +152,14 @@ class NMGammuManager(GammuWorker):
             return
 
         if cmd[0] != op:
-            log.critical('Errore nel flusso delle operazioni: aspettavo %s avuto %s' %(cmd[0], op))
+            log.critical('Errore nel flusso delle operazioni: aspettavo %s avuto %s. \n' %(cmd[0], op)+
+                         'CBs: %s' %self.callbacks)
             self._abortAction()
             return
 
         if error != gammu.Core.ERR_NONE:
             log.error('Errore %s durante l\'esecuzione di %s' %(error, op))
-            if cmd[2]:
+            if cmd and cmd[2]:
                 # errore, interrompere l'azione
                 log.critical('Grave, interrompo l\' azione')
                 self._abortAction()

@@ -2,9 +2,11 @@
 __all__ = ['GetInfo', 'ReadAddressBook']
 
 class GammuAction:
-    # vari comandi da eseguire:
+    # sintassi di un comando:
     # [ NOMECOMANDO PARAMETRI MEMORIZZAZIONERISULTATI SESIPUOANDAREAVANTIINCASODIERRORE ]
     # [{'string',  'parameters',    'callbacks',               fundamental}]
+    # ogni GammuAction deve avevrer un attributo self.cmds, una lista dei comandi da eseguire in ordine
+    # al completamento della GammuAction il GammuManager deve richiamare una callback per dare i risultati
     def __init__(self):
         pass
 
