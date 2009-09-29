@@ -19,7 +19,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import optparse
+import locale
+
 from core import NMcore
+
+locale.setlocale(locale.LC_ALL, '')
 
 __version__ = "0.1"
 __author__ = "Luca Dariz <luca.dariz@gmail.com>"

@@ -1,18 +1,21 @@
 
 __all__ = ['GetInfo', 'ReadAddressBook']
 
-class GammuAction:
+class GammuAction(object):
     # sintassi di un comando:
     # [ NOMECOMANDO PARAMETRI MEMORIZZAZIONERISULTATI SESIPUOANDAREAVANTIINCASODIERRORE ]
     # [{'string',  'parameters',    'callbacks',               fundamental}]
     # ogni GammuAction deve avevrer un attributo self.cmds, una lista dei comandi da eseguire in ordine
     # al completamento della GammuAction il GammuManager deve richiamare una callback per dare i risultati
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
+
+    def process(self):
+        raise NotImplementedError
 
 class GetInfo(GammuAction):
     def __init__(self):
-        GammuAction.__init__(self)
+        GammuAction.__init__(self, 'GetInfo')
         self.cmds = [['GetBatteryCharge', [], self._battery, False],
                      ['GetManufacturer', [], self._manufacturer, False],
                      ['GetModel', [], self._model, False],

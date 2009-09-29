@@ -198,7 +198,7 @@ class GammuThread(threading.Thread):
             errcode = info[0]['Code']
             error = gammu.Core.ErrorNumbers[errcode]
 
-        self._callback(name, result, error, percentage)
+        self._callback(cmd, result, error, percentage)
 
     def run(self):
         '''
