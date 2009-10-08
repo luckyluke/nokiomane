@@ -32,7 +32,7 @@ class GammuStatus:
     CONNECTED = 2
     EXECUTING = 3
 
-class NMGammuManager():
+class NMGammuManager:
     def __init__(self, core, config_manager):
         self._sm = gammu.Core.StateMachine()
         self._thread = GammuThread(self._sm)
@@ -47,11 +47,11 @@ class NMGammuManager():
         self._sm.SetConfig(0, config)
 
     def connect(self):
-        self._thread.add(Connect())
+        self._thread.add(NMConnect())
         self._thread.start()
 
     def disconnect(self):
-        self._thread.add(Disconnect())
+        self._thread.add(NMDisconnect())
         self._thread.stop()
 
     def eseguiGammuAction(self, gaction):

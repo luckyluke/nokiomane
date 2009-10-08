@@ -1,5 +1,5 @@
 
-__all__ = ['Connect', 'Disconnect', 'GetInfo', 'ReadAddressBook']
+__all__ = ['NMConnect', 'NMDisconnect', 'NMGetInfo', 'NMReadAddressBook']
 
 class GammuAction(object):
     # sintassi di un comando:
@@ -13,7 +13,7 @@ class GammuAction(object):
     def process(self):
         raise NotImplementedError
 
-class Connect(GammuAction):
+class NMConnect(GammuAction):
     def __init__(self):
         GammuAction.__init__(self, 'Connect')
         self.cmds = [['Init', [], self._init, True]]
@@ -24,7 +24,7 @@ class Connect(GammuAction):
     def process(self):
         pass
 
-class Disconnect(GammuAction):
+class NMDisconnect(GammuAction):
     def __init__(self):
         GammuAction.__init__(self, 'Disconnect')
         self.cmds = [['Terminate', [], self._terminate, True]]
@@ -35,7 +35,7 @@ class Disconnect(GammuAction):
     def process(self):
         pass
 
-class GetInfo(GammuAction):
+class NMGetInfo(GammuAction):
     def __init__(self):
         GammuAction.__init__(self, 'GetInfo')
         self.cmds = [['GetBatteryCharge', [], self._battery, False],
@@ -64,7 +64,7 @@ class GetInfo(GammuAction):
     def process(self):
         print 'okkk'
 
-class ReadAddressBook(GammuAction):
+class NMReadAddressBook(GammuAction):
     SCANSIONE_MEMORIA = 0
     LETTURA_MEMORIA = 1
     ELABORAZIONE_RUBRICA = 2

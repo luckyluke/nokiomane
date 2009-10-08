@@ -33,7 +33,7 @@ class NMcore():
             self.app.MainLoop()
         else:
             #
-            self.options.action = GammuManager.GetInfo()
+            self.options.action = GammuManager.NMGetInfo()
             #
             self.gammu.eseguiGammuAction(self.options.action)
 
