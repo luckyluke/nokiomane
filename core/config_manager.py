@@ -65,7 +65,7 @@ configE65 = {
             'Model': 'auto',
             }
 
-class ConfigManager():
+class ConfigManager:
     def __init__(self, core):
         pass
 
@@ -76,5 +76,8 @@ class ConfigManager():
         pass
 
     def getConfig(self, name):
+        return configE65
+
+    def getDefaultConfig(self):
         return configE65
 

@@ -1,5 +1,5 @@
 
-__all__ = ['GetInfo', 'ReadAddressBook']
+__all__ = ['Connect', 'Disconnect', 'GetInfo', 'ReadAddressBook']
 
 class GammuAction(object):
     # sintassi di un comando:
@@ -12,6 +12,28 @@ class GammuAction(object):
 
     def process(self):
         raise NotImplementedError
+
+class Connect(GammuAction):
+    def __init__(self):
+        GammuAction.__init__(self, 'Connect')
+        self.cmds = [['Init', [], self._init, True]]
+
+    def _init(self, *params):
+        print '%s' %str(params)
+
+    def process(self):
+        pass
+
+class Disconnect(GammuAction):
+    def __init__(self):
+        GammuAction.__init__(self, 'Disconnect')
+        self.cmds = [['Terminate', [], self._terminate, True]]
+
+    def _terminate(self, *params):
+        print '%s' %str(params)
+
+    def process(self):
+        pass
 
 class GetInfo(GammuAction):
     def __init__(self):
@@ -40,7 +62,7 @@ class GetInfo(GammuAction):
         print '%-15s: %s' % (('Firmware'), firmware[0])
 
     def process(self):
-        pass
+        print 'okkk'
 
 class ReadAddressBook(GammuAction):
     SCANSIONE_MEMORIA = 0
@@ -58,5 +80,4 @@ class ReadAddressBook(GammuAction):
 
     def elab(self):
         pass
-
 
