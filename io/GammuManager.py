@@ -88,12 +88,12 @@ class GammuThread(threading.Thread):
                         callback(result)
 
                     except gammu.Core.GSMError, info:
-                        can_process = False
                         errcode = info[0]['Code']
                         error = gammu.Core.ErrorNumbers[errcode]
                         log.error('Errore %s in %s - %s' %(info[0]['Code'], info[0]['Where'], info[0]['Text']))
 
                         if essential:
+                            can_process = False
                             log.error('Errore grave, blocco l\'azione %s' %(gaction.name))
                             break
 
