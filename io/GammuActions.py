@@ -18,8 +18,9 @@ class NMConnect(GammuAction):
         GammuAction.__init__(self, 'Connect')
         self.cmds = [['Init', [], self._init, True]]
 
-    def _init(self, *params):
-        print '%s' %str(params)
+    def _init(self, params):
+        if params:
+            raise TypeError
 
     def process(self):
         pass
@@ -29,8 +30,9 @@ class NMDisconnect(GammuAction):
         GammuAction.__init__(self, 'Disconnect')
         self.cmds = [['Terminate', [], self._terminate, True]]
 
-    def _terminate(self, *params):
-        print '%s' %str(params)
+    def _terminate(self, params):
+        if params:
+            raise TypeError
 
     def process(self):
         pass

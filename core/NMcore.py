@@ -10,15 +10,16 @@ log = logging.getLogger('core')
 class NMcore():
     def __init__(self, options):
         self.options = options
-        self.fs = NMFileSystemManager(self)
-        self.config = ConfigManager(self)
-        self.gammu = GammuManager.NMGammuManager(self, self.config)
-        self._event_manager = NMEventManager(self)
 
         if options.debug:
             logging.basicConfig(level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.WARNING)
+
+        self.fs = NMFileSystemManager(self)
+        self.config = ConfigManager(self)
+        self.gammu = GammuManager.NMGammuManager(self, self.config)
+        self._event_manager = NMEventManager(self)
 
         if self.options.text:
             log.info('Starting Nokiomane in text mode...')
@@ -35,6 +36,6 @@ class NMcore():
             #
             self.options.action = GammuManager.NMGetInfo()
             #
-            self.gammu.eseguiGammuAction(self.options.action)
+            #self.gammu.eseguiGammuAction(self.options.action)
 
 
